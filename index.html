@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Datos para transferencia</title>
+<style>
+  :root {
+    --fondo: #eef2f5;
+    --tarjeta: #ffffff;
+    --texto: #1b2a34;
+    --suave: #5b6b76;
+    --acento: #0f6b5c;
+    --acento-texto: #ffffff;
+    --borde: #d5dde3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --fondo: #10181d;
+      --tarjeta: #18232a;
+      --texto: #e8eef2;
+      --suave: #98a8b3;
+      --acento: #3fb8a0;
+      --acento-texto: #08201b;
+      --borde: #2b3a44;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; min-height: 100%; }
+  body {
+    background: var(--fondo);
+    color: var(--texto);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    min-height: 100vh;
+  }
+  main {
+    width: 100%;
+    max-width: 420px;
+    background: var(--tarjeta);
+    border: 1px solid var(--borde);
+    border-radius: 16px;
+    padding: 28px 24px;
+  }
+  h1 { font-size: 1.15rem; margin: 0 0 20px; font-weight: 600; }
+  dl { margin: 0 0 24px; }
+  dt { font-size: .85rem; color: var(--suave); margin-top: 14px; }
+  dd { margin: 2px 0 0; font-size: 1.05rem; }
+  .clabe {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 1.25rem;
+    letter-spacing: .04em;
+    word-break: break-all;
+    user-select: all;
+    -webkit-user-select: all;
+  }
+  button {
+    width: 100%;
+    font: inherit;
+    font-weight: 600;
+    padding: 16px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--acento);
+    color: var(--acento-texto);
+    cursor: pointer;
+  }
+  button:focus-visible { outline: 3px solid var(--texto); outline-offset: 2px; }
+  #estado { min-height: 1.4em; margin: 12px 0 0; text-align: center; font-size: .9rem; color: var(--suave); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Datos para transferencia</h1>
+  <dl>
+    <dt>Nombre</dt>
+    <dd>Joan Gamaliel Puebla Rodríguez</dd>
+    <dt>Banco</dt>
+    <dd>Revolut</dd>
+    <dt>CLABE</dt>
+    <dd class="clabe" id="clabe">170180011991426257</dd>
+  </dl>
+  <button type="button" id="copiar">Copiar CLABE</button>
+  <p id="estado" role="status" aria-live="polite"></p>
+</main>
+<script>
+  var boton = document.getElementById('copiar');
+  var estado = document.getElementById('estado');
+  var clabe = document.getElementById('clabe').textContent.trim();
+
+  function avisar(msg) {
+    estado.textContent = msg;
+    setTimeout(function () { estado.textContent = ''; }, 3000);
+  }
+
+  function copiarRespaldo() {
+    var rango = document.createRange();
+    rango.selectNodeContents(document.getElementById('clabe'));
+    var sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(rango);
+    try {
+      document.execCommand('copy');
+      avisar('CLABE copiada');
+    } catch (e) {
+      avisar('Mantén presionada la CLABE para copiarla');
+    }
+  }
+
+  boton.addEventListener('click', function () {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(clabe).then(
+        function () { avisar('CLABE copiada'); },
+        copiarRespaldo
+      );
+    } else {
+      copiarRespaldo();
+    }
+  });
+</script>
+</body>
+</html>
